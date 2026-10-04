@@ -60,10 +60,10 @@ pip install -r requirements.txt && pip install -e .
 
 pytest -q                                   # tests (the API test runs if FastAPI is installed)
 python -m hotel_risk.audit                  # data checks + the leakage column list
-python -m hotel_risk.evaluate               # Phase 2: models, temporal vs random split
+python -m hotel_risk.evaluate               # Phase 2: models, temporal vs random split, confusion matrix
 python -m hotel_risk.calibrate              # Phase 3: calibration + thresholds
 python -m hotel_risk.impact                 # Phase 4: overbooking policy value
-python -m hotel_risk.explain                # which features drive the model
+python -m hotel_risk.explain                # feature importance + SHAP (pip install shap) + plain-words insights
 python -m hotel_risk.compare_models         # logistic vs forest vs gradient boosting
 
 python -m hotel_risk.train data/raw/hotel_bookings.csv models/model.joblib
@@ -141,6 +141,23 @@ Permutation importance on the test period (shuffle one feature, see how much ROC
 | `agent` | 0.074 |
 | `market_segment` | 0.067 |
 | `lead_time` | 0.032 |
+
+What the raw data says about the top drivers (cancel rate on the test period, no model involved, so you can
+check the model's story against it):
+
+| Feature | Highest-cancel group | Lowest-cancel group |
+|---|---|---|
+| `deposit_type` | Non Refund: 100% | No Deposit: 33% |
+| `lead_time` | 181+ days: 50% | 0-7 days: 10% |
+| `market_segment` | Groups: 61% | Direct: 17% |
+| `customer_type` | Transient: 45% | Contract: 12% |
+| `country` | PRT: 63% | DEU: 22% |
+
+Reading it: booking far ahead, booking as a group or through an agent, and having no deposit at stake all go
+with more cancellations. The 100% for "Non Refund" is odd (you'd expect a non-refundable booking to be the
+*least* likely to cancel) and is a known quirk of this dataset, so treat that column as a data artifact
+rather than a business rule. `python -m hotel_risk.explain` prints this table, plus the SHAP direction for
+numeric features, and writes everything to `reports/feature_importance.json`.
 
 The plot is in `reports/feature_importance.png`, and a SHAP summary (which direction each feature pushes
 the prediction) is in `reports/shap_summary.png`. Two honest observations: `deposit_type`, `lead_time` and

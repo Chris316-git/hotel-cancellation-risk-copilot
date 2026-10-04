@@ -86,6 +86,22 @@ Your numbers may differ in the third decimal depending on library versions.
 The random split looks better because it lets the model learn from bookings that happen later than
 the ones it is tested on. Real hotels don't get to do that, so the temporal numbers are the ones to trust.
 
+### What the model gets right and wrong (confusion matrix)
+
+At a plain 0.5 cut-off on the test period (about 32,800 bookings, 40% of them cancelled):
+
+| | Flagged and cancelled (TP) | Flagged but stayed (FP) | Missed cancellations (FN) | Correctly cleared (TN) | Precision | Recall | F1 |
+|---|---|---|---|---|---|---|---|
+| Logistic regression | 6,613 | 1,972 | 6,514 | 17,679 | 0.770 | 0.504 | 0.609 |
+| **LightGBM** | 7,331 | 2,170 | 5,796 | 17,481 | 0.772 | 0.559 | 0.648 |
+
+![Confusion matrices](reports/confusion_matrix.png)
+
+Reading it: when LightGBM says "this one will cancel", it is right about 77% of the time, but at 0.5 it
+still misses 44% of real cancellations. That is the usual precision/recall trade-off, and it is why the
+threshold is chosen on a separate calibration slice (next section) instead of defaulting to 0.5. LightGBM
+beats the baseline mostly by catching more cancellations (recall 0.50 to 0.56) at the same precision.
+
 ### Calibration and thresholds
 
 Data is split chronologically into train (before 2016-12), calibration (2016-12 to 2017-02) and
@@ -158,6 +174,13 @@ with more cancellations. The 100% for "Non Refund" is odd (you'd expect a non-re
 *least* likely to cancel) and is a known quirk of this dataset, so treat that column as a data artifact
 rather than a business rule. `python -m hotel_risk.explain` prints this table, plus the SHAP direction for
 numeric features, and writes everything to `reports/feature_importance.json`.
+
+SHAP agrees with the raw table on direction for the numeric features: longer lead time pushes towards
+cancel, and more previous bookings that were *not* cancelled pushes towards staying (a repeat guest who
+kept their last bookings is a safer bet). Two to treat carefully: higher `adr` (price per night) pushes
+towards cancel, which may reflect room type and season rather than price itself, and
+`arrival_date_day_of_month` shows a strong direction even though it has no sensible causal story, so read it
+as noise the model picked up rather than a real driver. Correlation in the data is not a reason to act.
 
 The plot is in `reports/feature_importance.png`, and a SHAP summary (which direction each feature pushes
 the prediction) is in `reports/shap_summary.png`. Two honest observations: `deposit_type`, `lead_time` and

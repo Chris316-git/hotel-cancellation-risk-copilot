@@ -142,5 +142,240 @@
       "std": 0.0001
     }
   ],
-  "shap": "reports/shap_summary.png"
+  "cancel_rate_by_feature": {
+    "country": [
+      {
+        "group": "PRT",
+        "bookings": 9868,
+        "cancel_rate": 0.63
+      },
+      {
+        "group": "GBR",
+        "bookings": 4371,
+        "cancel_rate": 0.264
+      },
+      {
+        "group": "FRA",
+        "bookings": 3133,
+        "cancel_rate": 0.259
+      },
+      {
+        "group": "DEU",
+        "bookings": 2604,
+        "cancel_rate": 0.217
+      },
+      {
+        "group": "ESP",
+        "bookings": 1933,
+        "cancel_rate": 0.383
+      },
+      {
+        "group": "IRL",
+        "bookings": 1257,
+        "cancel_rate": 0.329
+      }
+    ],
+    "deposit_type": [
+      {
+        "group": "No Deposit",
+        "bookings": 29374,
+        "cancel_rate": 0.331
+      },
+      {
+        "group": "Non Refund",
+        "bookings": 3377,
+        "cancel_rate": 1.0
+      }
+    ],
+    "agent": [
+      {
+        "group": "9",
+        "bookings": 10999,
+        "cancel_rate": 0.458
+      },
+      {
+        "group": "-1",
+        "bookings": 3969,
+        "cancel_rate": 0.375
+      },
+      {
+        "group": "240",
+        "bookings": 3928,
+        "cancel_rate": 0.494
+      },
+      {
+        "group": "14",
+        "bookings": 1405,
+        "cancel_rate": 0.163
+      },
+      {
+        "group": "7",
+        "bookings": 1095,
+        "cancel_rate": 0.126
+      },
+      {
+        "group": "250",
+        "bookings": 942,
+        "cancel_rate": 0.209
+      }
+    ],
+    "market_segment": [
+      {
+        "group": "Online TA",
+        "bookings": 18514,
+        "cancel_rate": 0.421
+      },
+      {
+        "group": "Offline TA/TO",
+        "bookings": 5002,
+        "cancel_rate": 0.354
+      },
+      {
+        "group": "Groups",
+        "bookings": 4430,
+        "cancel_rate": 0.606
+      },
+      {
+        "group": "Direct",
+        "bookings": 3543,
+        "cancel_rate": 0.169
+      },
+      {
+        "group": "Corporate",
+        "bookings": 1023,
+        "cancel_rate": 0.235
+      }
+    ],
+    "lead_time": [
+      {
+        "group": "0-7 days",
+        "bookings": 3636,
+        "cancel_rate": 0.099
+      },
+      {
+        "group": "8-30 days",
+        "bookings": 4354,
+        "cancel_rate": 0.316
+      },
+      {
+        "group": "31-90 days",
+        "bookings": 6949,
+        "cancel_rate": 0.397
+      },
+      {
+        "group": "91-180 days",
+        "bookings": 9900,
+        "cancel_rate": 0.468
+      },
+      {
+        "group": "181+ days",
+        "bookings": 7939,
+        "cancel_rate": 0.503
+      }
+    ],
+    "customer_type": [
+      {
+        "group": "Transient",
+        "bookings": 27304,
+        "cancel_rate": 0.448
+      },
+      {
+        "group": "Transient-Party",
+        "bookings": 4681,
+        "cancel_rate": 0.172
+      },
+      {
+        "group": "Contract",
+        "bookings": 635,
+        "cancel_rate": 0.115
+      }
+    ]
+  },
+  "insights": [
+    "country: 'PRT' cancels 63% of the time vs 22% for 'DEU'.",
+    "deposit_type: 'Non Refund' cancels 100% of the time vs 33% for 'No Deposit'.",
+    "agent: '240' cancels 49% of the time vs 13% for '7'.",
+    "market_segment: 'Groups' cancels 61% of the time vs 17% for 'Direct'.",
+    "lead_time: '181+ days' cancels 50% of the time vs 10% for '0-7 days'.",
+    "customer_type: 'Transient' cancels 45% of the time vs 12% for 'Contract'."
+  ],
+  "shap": {
+    "plot": "reports/shap_summary.png",
+    "ranking": [
+      {
+        "feature": "deposit_type",
+        "mean_abs_shap": 1.7139
+      },
+      {
+        "feature": "country",
+        "mean_abs_shap": 0.9505
+      },
+      {
+        "feature": "market_segment",
+        "mean_abs_shap": 0.5761
+      },
+      {
+        "feature": "agent",
+        "mean_abs_shap": 0.4128
+      },
+      {
+        "feature": "previous_cancellations",
+        "mean_abs_shap": 0.3403
+      },
+      {
+        "feature": "lead_time",
+        "mean_abs_shap": 0.3139
+      },
+      {
+        "feature": "customer_type",
+        "mean_abs_shap": 0.2927
+      },
+      {
+        "feature": "adr",
+        "mean_abs_shap": 0.1402
+      },
+      {
+        "feature": "previous_bookings_not_canceled",
+        "mean_abs_shap": 0.0932
+      },
+      {
+        "feature": "arrival_date_week_number",
+        "mean_abs_shap": 0.0869
+      },
+      {
+        "feature": "distribution_channel",
+        "mean_abs_shap": 0.0664
+      },
+      {
+        "feature": "arrival_date_day_of_month",
+        "mean_abs_shap": 0.058
+      }
+    ],
+    "numeric_direction": {
+      "previous_cancellations": {
+        "spearman": 0.168,
+        "reading": "larger values push towards cancel"
+      },
+      "lead_time": {
+        "spearman": 0.548,
+        "reading": "larger values push towards cancel"
+      },
+      "adr": {
+        "spearman": 0.625,
+        "reading": "larger values push towards cancel"
+      },
+      "previous_bookings_not_canceled": {
+        "spearman": -0.298,
+        "reading": "larger values push towards stays"
+      },
+      "arrival_date_week_number": {
+        "spearman": -0.407,
+        "reading": "larger values push towards stays"
+      },
+      "arrival_date_day_of_month": {
+        "spearman": 0.701,
+        "reading": "larger values push towards cancel"
+      }
+    }
+  }
 }

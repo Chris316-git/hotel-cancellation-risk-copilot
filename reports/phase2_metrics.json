@@ -6,12 +6,36 @@
     "log_loss": 0.472,
     "base_rate": 0.4005
   },
+  "confusion_at_0.5/logistic_baseline": {
+    "threshold": 0.5,
+    "tn": 17679,
+    "fp": 1972,
+    "fn": 6514,
+    "tp": 6613,
+    "precision": 0.7703,
+    "recall": 0.5038,
+    "specificity": 0.8996,
+    "f1": 0.6092,
+    "accuracy": 0.7411
+  },
   "temporal/lightgbm": {
     "roc_auc": 0.8596,
     "pr_auc": 0.8132,
     "brier": 0.1502,
     "log_loss": 0.4369,
     "base_rate": 0.4005
+  },
+  "confusion_at_0.5/lightgbm": {
+    "threshold": 0.5,
+    "tn": 17481,
+    "fp": 2170,
+    "fn": 5796,
+    "tp": 7331,
+    "precision": 0.7716,
+    "recall": 0.5585,
+    "specificity": 0.8896,
+    "f1": 0.648,
+    "accuracy": 0.757
   },
   "random/logistic_baseline": {
     "roc_auc": 0.875,

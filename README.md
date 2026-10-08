@@ -229,6 +229,7 @@ python -m hotel_risk.train data/raw/hotel_bookings.csv models/model.joblib   # o
 python -m hotel_risk.agent.cli                    # chat in the terminal (rule router, no key needed)
 python -m hotel_risk.agent.cli --claude           # let Claude pick the tools (needs ANTHROPIC_API_KEY)
 python -m hotel_risk.agent.evaluate               # golden questions -> reports/agent_eval.json
+streamlit run src/hotel_risk/agent/ui.py        # chat UI that also shows every tool call (pip install streamlit)
 AGENT_PROVIDER=claude uvicorn hotel_risk.api:app  # POST /chat with {"message": "..."}
 ```
 
@@ -244,6 +245,8 @@ How it is built, and why it is boring on purpose:
   errors instead of being made up around.
 - **Deterministic fallback.** With no API key, or if the API fails, a regex rule router answers from the same
   tools, so tests and CI never depend on a paid service.
+- **Auditable UI.** The Streamlit page shows, under every answer, which tools ran, their arguments and raw
+  results, which provider answered, and whether the grounding check passed.
 - **Evaluated, not just demoed.** `evals/agent_cases.jsonl` checks tool choice, arguments, error handling and
   grounding. Tests run the same cases against a small synthetic model.
 

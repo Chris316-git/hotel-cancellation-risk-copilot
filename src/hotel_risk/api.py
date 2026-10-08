@@ -61,3 +61,35 @@ def score_bookings(bookings: list[Booking]):
     except ValueError as e:
         raise HTTPException(422, str(e))
     return res.to_dict(orient="records")
+
+
+class ChatRequest(BaseModel):
+    message: str = Field(min_length=1, max_length=500)
+    history: list[dict] = Field(default_factory=list, max_length=20)
+
+
+_agent = None
+
+
+def get_agent():
+    """Built lazily: loads the model and the booking table the agent can look things up in."""
+    global _agent
+    if _agent is None:
+        from .agent import HotelAgent, HotelTools
+        from .agent.providers import ClaudeProvider
+        from .data import load_raw
+        tools = HotelTools(get_bundle(), load_raw(os.environ.get("BOOKINGS_PATH", "data/raw/hotel_bookings.csv")))
+        use_claude = os.environ.get("AGENT_PROVIDER", "rules") == "claude"
+        _agent = HotelAgent(tools, ClaudeProvider() if use_claude else None)
+    return _agent
+
+
+@app.post("/chat")
+def chat(req: ChatRequest):
+    """Ask the copilot a question. Numbers in answers come from tools; see `grounded` and `tool_calls`."""
+    try:
+        r = get_agent().ask(req.message, req.history)
+    except FileNotFoundError:
+        raise HTTPException(503, "Model or booking data not found; run train and check BOOKINGS_PATH.")
+    return {"answer": r.answer, "provider": r.provider, "fallback_used": r.fallback_used,
+            "grounded": r.grounded, "tool_calls": r.tool_calls}

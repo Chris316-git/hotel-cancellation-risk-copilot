@@ -219,6 +219,37 @@ drift (see the 34% to 40% jump above), with scheduled retraining.
 docker build -t hotel-risk . && docker run -p 8000:8000 -v $PWD/models:/app/models hotel-risk
 ```
 
+## The copilot (agent)
+
+You can also ask questions in plain English, for example "which bookings arriving 2017-07-15 are most likely
+to cancel?", "how many should we oversell that day?" or "why is booking 100 risky?".
+
+```bash
+python -m hotel_risk.train data/raw/hotel_bookings.csv models/model.joblib   # once
+python -m hotel_risk.agent.cli                    # chat in the terminal (rule router, no key needed)
+python -m hotel_risk.agent.cli --claude           # let Claude pick the tools (needs ANTHROPIC_API_KEY)
+python -m hotel_risk.agent.evaluate               # golden questions -> reports/agent_eval.json
+AGENT_PROVIDER=claude uvicorn hotel_risk.api:app  # POST /chat with {"message": "..."}
+```
+
+How it is built, and why it is boring on purpose:
+
+- **Four tools, no free-form code or SQL.** `list_riskiest_bookings`, `overbooking_summary`,
+  `get_booking_risk` (with the top three drivers from LightGBM's native `pred_contrib`) and `explain_policy`.
+  They wrap the same calibrated model and cost-aware policy as everything above.
+- **The model never does the maths.** The LLM only chooses a tool and phrases the answer. Every number must
+  come from a tool.
+- **A grounding check on every answer.** Numbers in the reply that no tool produced get flagged
+  (`grounded: false` plus a visible warning). Tool errors, such as a date with no bookings, are returned as
+  errors instead of being made up around.
+- **Deterministic fallback.** With no API key, or if the API fails, a regex rule router answers from the same
+  tools, so tests and CI never depend on a paid service.
+- **Evaluated, not just demoed.** `evals/agent_cases.jsonl` checks tool choice, arguments, error handling and
+  grounding. Tests run the same cases against a small synthetic model.
+
+Limits worth knowing: bookings come from the historical dataset (a replay, not a live feed), the dollar
+figures use the illustrative assumptions described above, and drivers are model sensitivities, not causes.
+
 ## Roadmap
 
 - [x] Phase 1: scaffold, data cleaning, leakage audit, temporal split

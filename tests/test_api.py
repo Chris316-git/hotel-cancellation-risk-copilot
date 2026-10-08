@@ -29,3 +29,20 @@ def test_health_and_score(tmp_path, monkeypatch):
     r = c.post("/score", json=rec)
     assert r.status_code == 200, r.text
     assert 0 <= r.json()[0]["cancel_probability"] <= 1
+
+
+def test_chat_endpoint(tmp_path, monkeypatch):
+    from hotel_risk.agent import HotelAgent, HotelTools
+    df = synthetic(2500)
+    full = df.assign(assigned_room_type="A", booking_changes=0, days_in_waiting_list=0,
+                     required_car_parking_spaces=0, total_of_special_requests=0,
+                     reservation_status="x", reservation_status_date="2017-01-01")
+    bundle = build_bundle(clean(full))
+    api._agent = HotelAgent(HotelTools(bundle, df.drop(columns="is_canceled")))
+    c = TestClient(api.app)
+    r = c.post("/chat", json={"message": "how does the overbooking policy work"})
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["grounded"] and body["tool_calls"][0]["name"] == "explain_policy"
+    assert c.post("/chat", json={"message": ""}).status_code == 422
+    api._agent = None

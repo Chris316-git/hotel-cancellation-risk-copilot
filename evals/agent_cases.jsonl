@@ -1,0 +1,11 @@
+{"q": "Which bookings arriving 2017-07-15 are most likely to cancel?", "expect_tool": "list_riskiest_bookings", "expect_args": {"arrival_date": "2017-07-15"}}
+{"q": "show me the top 3 riskiest bookings on 2017-06-10", "expect_tool": "list_riskiest_bookings", "expect_args": {"arrival_date": "2017-06-10", "top_n": 3}}
+{"q": "How many should we oversell on 2017-07-20?", "expect_tool": "overbooking_summary", "expect_args": {"arrival_date": "2017-07-20"}}
+{"q": "overbooking summary for 2017-08-05", "expect_tool": "overbooking_summary", "expect_args": {"arrival_date": "2017-08-05"}}
+{"q": "why is booking 100 risky?", "expect_tool": "get_booking_risk", "expect_args": {"booking_id": 100}}
+{"q": "explain the cancellation risk of booking #2500", "expect_tool": "get_booking_risk", "expect_args": {"booking_id": 2500}}
+{"q": "How does the overbooking policy work and what are the assumptions?", "expect_tool": "explain_policy", "expect_args": {}}
+{"q": "why is the threshold set the way it is?", "expect_tool": "explain_policy", "expect_args": {}}
+{"q": "riskiest bookings on 2030-01-01", "expect_tool": "list_riskiest_bookings", "expect_error": true}
+{"q": "why is booking 99999999 risky", "expect_tool": "get_booking_risk", "expect_error": true}
+{"q": "what's the weather in Lisbon?", "expect_tool": null}

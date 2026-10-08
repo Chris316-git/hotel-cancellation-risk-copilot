@@ -1,11 +1,12 @@
-# Hotel Cancellation Risk System
+# Hotel Cancellation Risk Copilot
 
 Roughly 4 in 10 hotel bookings in this dataset never turn into a stay. This project tries to guess
 which ones, **at the moment the booking is made**, and then asks the question the hotel actually
 cares about: is it worth overselling that room?
 
 It covers the whole trip: honest data cleaning, a model, a model that is also *calibrated* (so "70%"
-actually means about 70%), a dollars-and-cents decision layer, and a small API you can poke at.
+actually means about 70%), a dollars-and-cents decision layer, a small API you can poke at, and a copilot
+you can ask in plain English (every number it quotes comes from a tool, not from the LLM).
 
 ## The short version
 

@@ -233,6 +233,8 @@ streamlit run src/hotel_risk/agent/ui.py        # chat UI that also shows every 
 AGENT_PROVIDER=claude uvicorn hotel_risk.api:app  # POST /chat with {"message": "..."}
 ```
 
+![Copilot UI answering an overbooking question, with the tool calls visible](reports/copilot_ui.png)
+
 How it is built, and why it is boring on purpose:
 
 - **Four tools, no free-form code or SQL.** `list_riskiest_bookings`, `overbooking_summary`,

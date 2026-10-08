@@ -67,6 +67,13 @@ def test_grounding_check_flags_invented_numbers():
     assert ungrounded_numbers("Booking 7 on 2017-07-15", calls, "why is booking 7 risky") == []
 
 
+def test_grounding_handles_signs_and_numeric_categories():
+    calls = [{"name": "t", "args": {}, "result": {"drivers": [{"feature": "agent", "value": "9", "log_odds": -1.07}]}}]
+    # LLMs write a typographic minus and quote category codes such as agent 9
+    assert ungrounded_numbers("agent 9 pulls toward staying (\u22121.07) and (-1.07)", calls) == []
+    assert ungrounded_numbers("agent 9 (-1.08)", calls) == ["1.08"] or ungrounded_numbers("agent 9 (-1.08)", calls) == ["-1.08"]
+
+
 class Boom:
     name = "boom"
 

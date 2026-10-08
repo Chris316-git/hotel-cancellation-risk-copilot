@@ -17,7 +17,9 @@ def _tool_numbers(value, out: list[float]) -> None:
     """Collect every numeric leaf from tool results (bools excluded)."""
     if isinstance(value, bool):
         return
-    if isinstance(value, (int, float)):
+    if isinstance(value, str):  # numeric-looking categories, e.g. agent "9", are tool output too
+        out += [float(x.replace(",", "")) for x in NUM_RE.findall(value) if "%" not in x]
+    elif isinstance(value, (int, float)):
         out.append(float(value))
     elif isinstance(value, dict):
         for v in value.values():
@@ -30,7 +32,7 @@ def _tool_numbers(value, out: list[float]) -> None:
 def ungrounded_numbers(answer: str, tool_calls: list[dict], question: str = "") -> list[str]:
     """Numbers in the answer that no tool produced (and the user did not supply).
 
-    A number is grounded if it equals a tool value, or a tool probability shown as a percentage, after
+    A number is grounded if its magnitude equals a tool value, or a tool probability shown as a percentage, after
     rounding to the precision written in the answer. Dates are ignored; numbers the user typed
     (booking ids, 'top 3') and 0/1 (formula constants) count as grounded.
     """
@@ -45,10 +47,10 @@ def ungrounded_numbers(answer: str, tool_calls: list[dict], question: str = "") 
     bad = []
     for tok in NUM_RE.findall(DATE_RE.sub("", answer)):
         raw = tok.rstrip("%").replace(",", "")
-        n = float(raw)
+        n = abs(float(raw))  # typographic minus signs (U+2212) are not matched, so compare magnitudes
         dec = len(raw.split(".")[1]) if "." in raw else 0
         pct = tok.endswith("%")
-        candidates = [v * 100 for v in source] if pct else source + [v * 100 for v in source]
+        candidates = [abs(v) * 100 for v in source] if pct else [abs(v) for v in source] + [abs(v) * 100 for v in source]
         if n in typed or any(round(c, dec) == n for c in candidates):
             continue
         bad.append(tok)

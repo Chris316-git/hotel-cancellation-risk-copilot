@@ -97,7 +97,7 @@ class ClaudeProvider:
     MAX_STEPS = 5
 
     def __init__(self, model: str | None = None, client=None):
-        self.model = model or os.environ.get("HOTEL_AGENT_MODEL", "claude-sonnet-4-5")
+        self.model = model or os.environ.get("HOTEL_AGENT_MODEL", "claude-sonnet-5-5")
         self._client = client
 
     def _get_client(self):

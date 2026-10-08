@@ -1,0 +1,108 @@
+{
+  "cases": 11,
+  "pass_rate": 1.0,
+  "tool_accuracy": 1.0,
+  "grounded_rate": 1.0,
+  "fallback_rate": 0.0,
+  "results": [
+    {
+      "question": "Which bookings arriving 2017-07-15 are most likely to cancel?",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "show me the top 3 riskiest bookings on 2017-06-10",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "How many should we oversell on 2017-07-20?",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "overbooking summary for 2017-08-05",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "why is booking 100 risky?",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "explain the cancellation risk of booking #2500",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "How does the overbooking policy work and what are the assumptions?",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "why is the threshold set the way it is?",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "riskiest bookings on 2030-01-01",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "why is booking 99999999 risky",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    },
+    {
+      "question": "what's the weather in Lisbon?",
+      "tool_ok": true,
+      "error_handling_ok": true,
+      "grounded": true,
+      "provider": "rules",
+      "fallback_used": false,
+      "passed": true
+    }
+  ]
+}

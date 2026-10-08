@@ -34,6 +34,11 @@ def get_tools() -> HotelTools:
     return tools
 
 
+def safe(text: str) -> str:
+    """Streamlit treats $...$ as math; escape dollar signs so '$1,250,641 against $667,396' renders as text."""
+    return text.replace("$", "\\$")
+
+
 def render_trail(msg: dict) -> None:
     """Badges plus an expandable list of tool calls under an assistant message."""
     badge = f"provider: **{msg['provider']}**" + (" (fallback)" if msg["fallback_used"] else "")
@@ -76,7 +81,7 @@ with st.sidebar:
 st.session_state.setdefault("messages", [])
 for m in st.session_state["messages"]:
     with st.chat_message(m["role"]):
-        st.markdown(m["content"])
+        st.markdown(safe(m["content"]))
         if m["role"] == "assistant":
             render_trail(m)
 
@@ -85,12 +90,12 @@ if question:
     history = [{"role": m["role"], "content": m["content"]} for m in st.session_state["messages"]]
     st.session_state["messages"].append({"role": "user", "content": question})
     with st.chat_message("user"):
-        st.markdown(question)
+        st.markdown(safe(question))
     agent = HotelAgent(tools, ClaudeProvider() if mode == "Claude" else None)
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
             r = agent.ask(question, history)
-        st.markdown(r.answer)
+        st.markdown(safe(r.answer))
         msg = {"role": "assistant", "content": r.answer, "provider": r.provider,
                "fallback_used": r.fallback_used, "fallback_reason": r.fallback_reason,
                "grounded": r.grounded, "tool_calls": json.loads(json.dumps(r.tool_calls, default=str))}

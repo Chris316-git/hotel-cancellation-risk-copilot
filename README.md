@@ -235,6 +235,22 @@ AGENT_PROVIDER=claude uvicorn hotel_risk.api:app  # POST /chat with {"message": 
 
 ![Copilot UI answering an overbooking question, with the tool calls visible](reports/copilot_ui.png)
 
+### Quick demo (for someone seeing this for the first time)
+
+1. Clone the repo, create a Python 3.11 environment, then `pip install -r requirements.txt`, `pip install -e .`
+   and `pip install streamlit`. On macOS, LightGBM also needs `conda install -c conda-forge llvm-openmp`.
+2. Train the model once (about a minute or two):
+   `python -m hotel_risk.train data/raw/hotel_bookings.csv models/model.joblib`
+3. Start the page: `streamlit run src/hotel_risk/agent/ui.py`. No API key is needed; pick "Rule router" in the
+   sidebar and click one of the example questions.
+4. Ask about a date written as `2017-07-15`, or a booking by its id. Under every answer, open "Tool calls" to
+   see exactly what ran.
+
+What it can and cannot do: it scores bookings that are already in the loaded data (2015-07 to 2017-08) and
+turns the risk into an overbooking suggestion. It does not forecast future months or demand, it is not
+connected to a live booking system, and the dollar figures use illustrative assumptions. Using it on a real
+hotel would mean feeding it that hotel's own bookings, retraining, and monitoring drift.
+
 How it is built, and why it is boring on purpose:
 
 - **Four tools, no free-form code or SQL.** `list_riskiest_bookings`, `overbooking_summary`,
